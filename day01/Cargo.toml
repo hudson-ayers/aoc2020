@@ -5,3 +5,5 @@ authors = ["Hudson Ayers <hayers@stanford.edu>"]
 edition = "2018"
 
 [dependencies]
+elapsed = "0.1"
+
