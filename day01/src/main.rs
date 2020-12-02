@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::vec;
@@ -7,7 +8,7 @@ use elapsed::measure_time;
 fn main() {
     let filename = "input/input.txt";
     let input = file_to_vec(filename);
-    let (time, ret) = measure_time(|| solve_part_1(&input));
+    let (time, ret) = measure_time(|| solve_part_1(&input, 2020).unwrap());
     let (time2, ret2) = measure_time(|| solve_part_2(&input));
     println!("part 1: {} in {}", ret, time);
     println!("part 2: {} in {}", ret2, time2);
@@ -23,25 +24,26 @@ fn file_to_vec(filename: &str) -> Vec<i64> {
     numbers
 }
 
-fn solve_part_1(numbers: &Vec<i64>) -> i64 {
-    for (idx1, num1) in numbers.iter().enumerate() {
-        for num2 in numbers[idx1 + 1..].iter() {
-            if num1 + num2 == 2020 {
-                return num1 * num2;
-            }
+// (O(n))
+fn solve_part_1(numbers: &[i64], target: i64) -> Option<i64> {
+    let mut set = HashSet::new();
+    set.insert(numbers[0]);
+    for num in numbers[0..].iter() {
+        if set.contains(&(target - num)) {
+            return Some(num * (target - num));
+        } else {
+            set.insert(*num);
         }
     }
-    panic!("no solution part 1");
+    None
 }
 
-fn solve_part_2(numbers: &Vec<i64>) -> i64 {
-    for (idx1, num1) in numbers.iter().enumerate() {
-        for (idx2, num2) in numbers[idx1 + 1..].iter().enumerate() {
-            for num3 in numbers[idx1 + idx2 + 2..].iter() {
-                if num1 + num2 + num3 == 2020 {
-                    return num1 * num2 * num3;
-                }
-            }
+// O(n^2)
+fn solve_part_2(numbers: &[i64]) -> i64 {
+    for (i, num) in numbers[0..].iter().enumerate() {
+        match solve_part_1(&numbers[i..], 2020 - num) {
+            Some(res) => return res * num,
+            None => {}
         }
     }
     panic!("no solution part 2");
