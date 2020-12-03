@@ -14,8 +14,7 @@ fn main() {
 fn part_1(filename: &str) -> i64 {
     let file = File::open(filename).unwrap();
     let lines = io::BufReader::new(file).lines();
-    let mut correct = 0;
-    for line in lines {
+    lines.fold(0, |acc, line| {
         let a = line.unwrap();
         let mut tokens = a.split_ascii_whitespace();
         let mut first = tokens.next().unwrap().split('-');
@@ -25,17 +24,17 @@ fn part_1(filename: &str) -> i64 {
         let password = tokens.next().unwrap();
         let count = password.matches(required).count();
         if count >= min && count <= max {
-            correct += 1;
+            acc + 1
+        } else {
+            acc + 0
         }
-    }
-    correct
+    })
 }
 
 fn part_2(filename: &str) -> i64 {
     let file = File::open(filename).unwrap();
     let lines = io::BufReader::new(file).lines();
-    let mut correct = 0;
-    for line in lines {
+    lines.fold(0, |acc, line| {
         let a = line.unwrap();
         let mut tokens = a.split_ascii_whitespace();
         let mut first = tokens.next().unwrap().split('-');
@@ -55,8 +54,9 @@ fn part_2(filename: &str) -> i64 {
         };
 
         if match1 ^ match2 {
-            correct += 1;
+            acc + 1
+        } else {
+            acc
         }
-    }
-    correct
+    })
 }
